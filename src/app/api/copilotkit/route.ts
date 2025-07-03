@@ -2,7 +2,6 @@ import {
   CopilotRuntime,
   ExperimentalEmptyAdapter,
   copilotRuntimeNextJSAppRouterEndpoint,
-  langGraphPlatformEndpoint,
 } from "@copilotkit/runtime";
 import { NextRequest } from "next/server";
 
