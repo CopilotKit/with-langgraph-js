@@ -62,8 +62,6 @@ async function chat_node(state: AgentState, config: RunnableConfig) {
     ],
   );
 
-  console.log("state.proverbs", state);
-
   // 5.3 Define the system message, which will be used to guide the model, in this case
   //     we also add in the language to use from the state.
   const systemMessage = new SystemMessage({
