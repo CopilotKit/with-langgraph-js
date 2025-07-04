@@ -101,27 +101,22 @@ jobs:
   notify-slack:
     name: Notify Slack on Failure
     runs-on: ubuntu-latest
-    needs: smoke
-    if: |
-      failure() && 
-      github.event_name == 'schedule'
     steps:
       - name: Notify Slack
-        uses: slackapi/slack-github-action@v1.24.0
+        uses: slackapi/slack-github-action@v2.1.0
         with:
-          channel-id: 'general'
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
           payload: |
             {
-              "text": ":warning: *Smoke test failed on `with-langgraph`* :warning:",
+              "text": ":warning: *Smoke test failed for `with-langgraph-js` :warning:.*",
               "blocks": [
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": ":warning: *Smoke test failed on `with-langgraph`* :warning:\n\n*Repository:* ${{ github.repository }}\n*Workflow:* ${{ github.workflow }}\n*Run ID:* ${{ github.run_id }}\n*Commit:* ${{ github.sha }}\n\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run details>"
+                    "text": ":warning: *Smoke test failed for <https://github.com/copilotkit/with-langgraph-js|with-langgraph-js> :warning:*\n\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run details>"
                   }
                 }
               ]
-            }
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }} 
+            } 
