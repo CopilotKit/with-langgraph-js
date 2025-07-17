@@ -10,6 +10,7 @@ export default function CopilotKitPage() {
   // 🪁 Frontend Actions: https://docs.copilotkit.ai/guides/frontend-actions
   useCopilotAction({
     name: "setThemeColor",
+    description: "Set the theme color of the page.",
     parameters: [{
       name: "themeColor",
       description: "The theme color to set. Make sure to pick nice colors.",
@@ -54,6 +55,7 @@ function YourMainContent({ themeColor }: { themeColor: string }) {
   // 🪁 Frontend Actions: https://docs.copilotkit.ai/coagents/frontend-actions
   useCopilotAction({
     name: "addProverb",
+    description: "Add a proverb to the list.",
     parameters: [{
       name: "proverb",
       description: "The proverb to add. Make it witty, short and concise.",
