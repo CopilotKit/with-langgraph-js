@@ -2,11 +2,10 @@ import {
   CopilotRuntime,
   ExperimentalEmptyAdapter,
   copilotRuntimeNextJSAppRouterEndpoint,
+  LangGraphAgent
 } from "@copilotkit/runtime";
 import { NextRequest } from "next/server";
 
-import { LangGraphAgent } from "@ag-ui/langgraph";
- 
 // 1. You can use any service adapter here for multi-agent support. We use
 //    the empty adapter since we're only using one agent.
 const serviceAdapter = new ExperimentalEmptyAdapter();

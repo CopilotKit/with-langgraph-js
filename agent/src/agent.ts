@@ -49,7 +49,7 @@ async function chat_node(state: AgentState, config: RunnableConfig) {
   //     the model to call tools that are defined in CopilotKit by the frontend.
   const modelWithTools = model.bindTools!(
     [
-      ...convertActionsToDynamicStructuredTools(state.copilotkit.actions || []),
+      ...convertActionsToDynamicStructuredTools(state.copilotkit?.actions ?? []),
       ...tools,
     ],
   );
@@ -85,7 +85,7 @@ function shouldContinue({ messages, copilotkit }: AgentState) {
     const toolCallName = lastMessage.tool_calls![0].name;
 
     // 7.3 Only route to the tool node if the tool call is not a CopilotKit action
-    if (!actions || actions.every((action) => action.name !== toolCallName)) {
+    if (!actions || actions.every((action) => action.function.name !== toolCallName)) {
       return "tool_node"
     }
   }
