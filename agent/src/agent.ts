@@ -85,7 +85,7 @@ function shouldContinue({ messages, copilotkit }: AgentState) {
     const toolCallName = lastMessage.tool_calls![0].name;
 
     // 7.3 Only route to the tool node if the tool call is not a CopilotKit action
-    if (!actions || actions.every((action) => action.function.name !== toolCallName)) {
+    if (!actions || actions.every((action) => action.name !== toolCallName)) {
       return "tool_node"
     }
   }
