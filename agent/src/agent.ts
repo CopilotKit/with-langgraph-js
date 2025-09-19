@@ -10,22 +10,14 @@ import { ToolNode } from "@langchain/langgraph/prebuilt";
 import { AIMessage, SystemMessage } from "@langchain/core/messages";
 import { MemorySaver, START, StateGraph } from "@langchain/langgraph";
 import { ChatOpenAI } from "@langchain/openai";
-import { convertActionsToDynamicStructuredTools } from "@copilotkit/sdk-js/langgraph";
-import { BaseMessage } from "@langchain/core/messages";
+import { convertActionsToDynamicStructuredTools, CopilotKitStateAnnotation } from "@copilotkit/sdk-js/langgraph";
 import { Annotation } from "@langchain/langgraph";
 
 // 1. Define our agent state, which includes CopilotKit state to
 //    provide actions to the state.
 const AgentStateAnnotation = Annotation.Root({
-  // Define a 'messages' channel to store an array of BaseMessage objects
-  messages: Annotation<BaseMessage[]>({
-    // Reducer function: Combines the current state with new messages
-    reducer: (currentState, updateValue) => currentState.concat(updateValue),
-    // Default function: Initialize the channel with an empty array
-    default: () => [],
-  }),
+  ...CopilotKitStateAnnotation.spec, // CopilotKit state annotation already includes messages, as well as frontend tools
   proverbs: Annotation<string[]>,
-  tools: Annotation<any[]>, // ag-ui tools will be added here
 });
 
 // 2. Define the type for our agent state
@@ -57,7 +49,7 @@ async function chat_node(state: AgentState, config: RunnableConfig) {
   //     the model to call tools that are defined in CopilotKit by the frontend.
   const modelWithTools = model.bindTools!(
     [
-      ...convertActionsToDynamicStructuredTools(state.tools || []),
+      ...convertActionsToDynamicStructuredTools(state.copilotkit?.actions ?? []),
       ...tools,
     ],
   );
@@ -82,16 +74,18 @@ async function chat_node(state: AgentState, config: RunnableConfig) {
 
 // 6. Define the function that determines whether to continue or not,
 //    this is used to determine the next node to run
-function shouldContinue({ messages, tools }: AgentState) {
+function shouldContinue({ messages, copilotkit }: AgentState) {
   // 6.1 Get the last message from the state
   const lastMessage = messages[messages.length - 1] as AIMessage;
 
   // 7.2 If the LLM makes a tool call, then we route to the "tools" node
   if (lastMessage.tool_calls?.length) {
+    // Actions are the frontend tools coming from CopilotKit
+    const actions = copilotkit?.actions;
     const toolCallName = lastMessage.tool_calls![0].name;
 
     // 7.3 Only route to the tool node if the tool call is not a CopilotKit action
-    if (!tools || tools.every((tool) => tool.name !== toolCallName)) {
+    if (!actions || actions.every((action) => action.name !== toolCallName)) {
       return "tool_node"
     }
   }

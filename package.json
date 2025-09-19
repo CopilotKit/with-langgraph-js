@@ -13,10 +13,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@ag-ui/langgraph": "0.0.7",
-    "@copilotkit/react-core": "1.9.3",
-    "@copilotkit/react-ui": "1.9.3",
-    "@copilotkit/runtime": "1.9.3",
+    "@copilotkit/react-core": "1.10.4",
+    "@copilotkit/react-ui": "1.10.4",
+    "@copilotkit/runtime": "1.10.4",
     "next": "15.3.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -34,5 +33,8 @@
     "eslint-config-next": "15.3.2",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "resolutions": {
+    "@ag-ui/langgraph": "0.0.15"
   }
 }
