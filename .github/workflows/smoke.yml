@@ -2,11 +2,11 @@ name: Smoke
 
 on:
   push:
-    branches: main
+    branches: [main]
   pull_request:
-    branches: main
+    branches: [main]
   schedule:
-    - cron: '0 0 * * *'  # Run daily at midnight UTC
+    - cron: "0 0 * * 0" # Run weekly at midnight UTC
 
 jobs:
   smoke:
@@ -27,28 +27,42 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Install dependencies (root)
-        run: npm install
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
 
-      - name: Install dependencies (agent)
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
         run: |
-          cd agent
-          npm install
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Build
-        run: npm run build || echo "No build script in root"
+        run: pnpm build
       - name: Start and check main app (Linux/macOS)
         if: runner.os != 'Windows'
         run: |
           # Start the server in background
-          npm start &
+          cd apps/web && pnpm start &
           SERVER_PID=$!
-          
+
           # Wait for server to start (max 30 seconds)
           timeout=30
           elapsed=0
           started=false
-          
+
           while [ $elapsed -lt $timeout ] && [ "$started" = false ]; do
             if curl -s http://localhost:3000 > /dev/null 2>&1; then
               started=true
@@ -58,10 +72,10 @@ jobs:
               elapsed=$((elapsed + 1))
             fi
           done
-          
+
           # Clean up background process
           kill $SERVER_PID 2>/dev/null || true
-          
+
           if [ "$started" = false ]; then
             echo "❌ Main app failed to start within 30 seconds"
             exit 1
@@ -72,13 +86,14 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           # Start the server in background
-          npm start &
-          
+          cd apps/web
+          pnpm start &
+
           # Wait for server to start (max 30 seconds)
           $timeout = 30
           $elapsed = 0
           $started = $false
-          
+
           while ($elapsed -lt $timeout -and -not $started) {
             try {
               $response = Invoke-WebRequest -Uri "http://localhost:3000" -TimeoutSec 1 -ErrorAction SilentlyContinue
@@ -91,7 +106,7 @@ jobs:
               $elapsed++
             }
           }
-          
+
           if (-not $started) {
             Write-Host "❌ Main app failed to start within 30 seconds"
             exit 1
@@ -103,7 +118,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: smoke
     if: |
-      failure() && 
+      failure() &&
       github.event_name == 'schedule'
     steps:
       - name: Notify Slack
@@ -123,4 +138,4 @@ jobs:
                   }
                 }
               ]
-            } 
+            }
