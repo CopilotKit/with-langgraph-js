@@ -1,6 +1,6 @@
 {
   "name": "agent",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@copilotkit/sdk-js": "1.10.6",
-    "@langchain/core": "1.1.0",
+    "@langchain/core": "^1.0.1",
     "@langchain/langgraph": "1.0.2",
     "@langchain/langgraph-checkpoint": "1.0.0",
     "@langchain/openai": "^1.1.3",

@@ -14,7 +14,7 @@ export default function CopilotKitPage() {
     parameters: [{
       name: "themeColor",
       description: "The theme color to set. Make sure to pick nice colors.",
-      required: true, 
+      required: true,
     }],
     handler({ themeColor }) {
       setThemeColor(themeColor);
@@ -62,12 +62,12 @@ function YourMainContent({ themeColor }: { themeColor: string }) {
       required: true,
     }],
     handler: ({ proverb }) => {
-      setState({
-        ...state,
-        proverbs: [...state.proverbs, proverb],
-      });
+      setState((prevState) => ({
+        ...prevState,
+        proverbs: [...(prevState?.proverbs || []), proverb],
+      }));
     },
-  });
+  }, [setState]);
 
   //🪁 Generative UI: https://docs.copilotkit.ai/coagents/generative-ui
   useCopilotAction({
@@ -93,17 +93,17 @@ function YourMainContent({ themeColor }: { themeColor: string }) {
         <hr className="border-white/20 my-6" />
         <div className="flex flex-col gap-3">
           {state.proverbs?.map((proverb, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className="bg-white/15 p-4 rounded-xl text-white relative group hover:bg-white/20 transition-all"
             >
               <p className="pr-8">{proverb}</p>
-              <button 
+              <button
                 onClick={() => setState({
                   ...state,
                   proverbs: state.proverbs?.filter((_, i) => i !== index),
                 })}
-                className="absolute right-3 top-3 opacity-0 group-hover:opacity-100 transition-opacity 
+                className="absolute right-3 top-3 opacity-0 group-hover:opacity-100 transition-opacity
                   bg-red-500 hover:bg-red-600 text-white rounded-full h-6 w-6 flex items-center justify-center"
               >
                 ✕
@@ -145,12 +145,12 @@ function WeatherCard({ location, themeColor }: { location?: string, themeColor: 
         </div>
         <SunIcon />
       </div>
-      
+
       <div className="mt-4 flex items-end justify-between">
         <div className="text-3xl font-bold text-white">70°</div>
         <div className="text-sm text-white">Clear skies</div>
       </div>
-      
+
       <div className="mt-4 pt-4 border-t border-white">
         <div className="grid grid-cols-3 gap-2 text-center">
           <div>
