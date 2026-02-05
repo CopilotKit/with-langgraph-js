@@ -1,25 +1,27 @@
 {
-  "name": "web",
+  "name": "@repo/app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint ."
   },
   "dependencies": {
+    "@a2ui/lit": "^0.8.1",
+    "@ag-ui/a2ui-middleware": "^0.0.1",
+    "@ag-ui/mcp-apps-middleware": "^0.0.3",
     "@copilotkit/a2ui-renderer": "1.51.4-next.1",
     "@copilotkit/react-core": "1.51.4-next.1",
     "@copilotkit/react-ui": "1.51.4-next.1",
     "@copilotkit/runtime": "1.51.4-next.1",
-    "@copilotkitnext/agent": "1.51.4-next.1",
-    "@copilotkitnext/runtime": "1.51.4-next.1",
-    "next": "16.0.8",
-    "react": "^19.2.1",
-    "react-dom": "^19.2.1",
-    "recharts": "^3.7.0",
-    "zod": "^3.24.4"
+    "next": "16.1.6",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-rnd": "^10.5.2",
+    "react18-json-view": "^0.2.9",
+    "recharts": "^3.7.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -28,8 +30,9 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.0.8",
+    "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "zod": "^4.3.6"
   }
 }
